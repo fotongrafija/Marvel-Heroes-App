@@ -59,6 +59,7 @@ function App() {
 		setOffsetParam(newOffset)
 		debouncedSearchChange(characterName);
 	}
+	console.log('charactername', characterName)
 	// Conditional rendering
 	const isShowingSaved = !error && !characterData && savedCharacters.length > 0
 	const characters = isShowingSaved ? savedCharacters : characterData?.results
