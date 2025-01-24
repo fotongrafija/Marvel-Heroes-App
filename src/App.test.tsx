@@ -11,6 +11,7 @@ jest.mock('./hooks/useBookmark');
 jest.mock('./hooks/useCharacterFilter');
 
 const mockApp = () => {
+    console.log('app');
     return render(<div><div id='root' /><App /></div>)
 }
 
