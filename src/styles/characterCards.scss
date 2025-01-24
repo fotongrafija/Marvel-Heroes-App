@@ -1,0 +1,150 @@
+.characters {
+  max-width: 80vw;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+  padding: 1em;
+  background-color: rgba(255, 255, 255, 0);
+  // background-image: url(../images/paper.jpg);
+}
+
+
+.bookmark-control {
+  font-family: inherit;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+
+  --form-control-color: #f6fa00;
+
+  
+
+
+  input[type="checkbox"].bookmark-input {
+
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+
+    display: grid;
+    place-content: center;
+    width: 1.2em;
+    height: 0.5em;
+    border: 0.15em ridge whitesmoke;
+    cursor: pointer;
+  }
+
+
+  input[type="checkbox"].bookmark-input:checked::before {
+    transform: scale(0);
+    cursor: pointer;
+  }
+
+
+  input[type="checkbox"].bookmark-input:checked::after {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    transform: scale(1);
+    cursor: pointer;
+
+
+    input[type="checkbox"].bookmark-input {
+      appearance: none;
+      -webkit-appearance: none;
+      margin: 0;
+      display: grid;
+      place-content: center;
+      width: 1.2em;
+      height: 0.5em;
+      border: 0.15em ridge whitesmoke;
+      transition: 120ms transform ease-in-out;
+
+    }
+
+
+
+    box-shadow: inset 1em 1em var(--form-control-color);
+    background-color: var(--form-control-color);
+    transform-origin: center;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+
+
+
+}
+
+
+
+.characterCard {
+  border: 2px solid rgb(161, 161, 161);
+  background: rgba(255, 255, 255, 0.67);
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  border: 2px solid black;
+  box-shadow: 4px 4px black;
+
+
+  transition: 0.2s linear;
+
+  .caption {
+    font-family: "Bangers", cursive;
+    font-size: 1.5rem;
+    text-align: center;
+    margin: auto auto 5px auto;
+    padding: 0.2rem 0.3rem;
+    opacity: 81%;
+    background-color: white;
+    /* background-image: url(../images/paper.jpg); */
+    border: 1px solid black;
+    box-shadow: 2px 2px black;
+
+    &.bottom {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+    }
+  }
+
+  &:hover {
+    cursor: default;
+
+    box-shadow: 6px 6px black;
+    transform: translate(-2px, -2px);
+
+    .caption {
+      opacity: 0;
+    }
+
+    .bottom {
+      opacity: 1;
+    }
+  }
+}
+
+
+@media only screen and (max-width: 1747px) {
+  .characters {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media only screen and (max-width: 1284px) {
+  .characters {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media only screen and (max-width: 854px) {
+  .characters {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
