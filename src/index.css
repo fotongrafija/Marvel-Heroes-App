@@ -2,6 +2,7 @@
 body {
   margin: 0;
   font-family: "Open Sans", sans-serif;
+  background-color: white;
   background: linear-gradient(
         45deg,
         rgba(167, 156, 7, 0.3),
