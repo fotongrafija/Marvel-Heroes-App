@@ -76,11 +76,13 @@ describe('App', () => {
     });
 
 
+if(sdasda){
 
+}
     test('shows error state', () => {
         (useCharacterData as jest.Mock).mockReturnValue({
             ...useCharacterData,
-            error: 'Error message',
+            error: 'Error message',sdasda
             characterData: undefined
         });
 
