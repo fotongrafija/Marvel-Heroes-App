@@ -11,8 +11,10 @@ describe('useCharacterData', () => {
   // Common mocks
   const mockGetApiUrl = getApiUrl as jest.Mock;
   const mockUseCharacterFilter = useCharacterFilter as jest.Mock;
+  const DEFAULT_TOTAL_PAYLOAD = 50;
 
   let originalFetch: typeof global.fetch;
+
 
 
   beforeAll(() => {
@@ -49,16 +51,20 @@ describe('useCharacterData', () => {
       setCustomFilter: jest.fn(),
     })
 
+    const payload = {
+      data: {
+        results: [{ id: 100, name: 'Mock Character' }],
+        total: DEFAULT_TOTAL_PAYLOAD,
+        limit: 20,
+        offset: 0
+      }
+    }
+
     // Mock global fetch
     global.fetch = jest.fn().mockResolvedValue({
-      json: async () => ({
-        data: {
-          results: [{ id: 100, name: 'Mock Character' }],
-          total: 50,
-          limit: 20,
-          offset: 0
-        },
-      }),
+      json: async () => (
+       payload
+      ),
     } as Response)
 
     // Act
@@ -87,12 +93,9 @@ describe('useCharacterData', () => {
     expect(result.current.loading).toBe(false)
 
     // 4) characterData should be populated
-    expect(result.current.characterData).toEqual({
-      results: [{ id: 100, name: 'Mock Character' }],
-      total: 50,
-      limit: 20,
-      offset: 0
-    })
+    expect(result.current.characterData).toEqual(
+      payload.data
+    )
   })
 
   it('should do nothing if characterName is empty', async () => {
