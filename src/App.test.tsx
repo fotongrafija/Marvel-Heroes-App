@@ -76,7 +76,7 @@ describe('App', () => {
     });
 
 
-
+asdas
     test('shows error stateasdas', () => {
         (useCharacterData as jest.Mock).mockReturnValue({
             ...useCharacterData,
