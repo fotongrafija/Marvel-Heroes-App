@@ -11,8 +11,10 @@ describe('useCharacterData', () => {
   // Common mocks
   const mockGetApiUrl = getApiUrl as jest.Mock;
   const mockUseCharacterFilter = useCharacterFilter as jest.Mock;
+  const DEFAULT_TOTAL_PAYLOAD = 50;
 
   let originalFetch: typeof global.fetch;
+
 
 
   beforeAll(() => {
@@ -52,7 +54,7 @@ describe('useCharacterData', () => {
     const payload = {
       data: {
         results: [{ id: 100, name: 'Mock Character' }],
-        total: 50,
+        total: DEFAULT_TOTAL_PAYLOAD,
         limit: 20,
         offset: 0
       }
