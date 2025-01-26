@@ -8,157 +8,157 @@ jest.mock('../utils/getApiUrl');
 jest.mock('./useCharacterFilter');
 
 describe('useCharacterData', () => {
-  // Common mocks
-  const mockGetApiUrl = getApiUrl as jest.Mock;
-  const mockUseCharacterFilter = useCharacterFilter as jest.Mock;
+	// Common mocks
+	const mockGetApiUrl = getApiUrl as jest.Mock;
+	const mockUseCharacterFilter = useCharacterFilter as jest.Mock;
 
-  let originalFetch: typeof global.fetch;
+	let originalFetch: typeof global.fetch;
 
 
-  beforeAll(() => {
-  // Set up a default mock fetch
-    global.fetch = jest.fn();
-  
-  });
-  beforeEach(() => {
-    originalFetch = global.fetch;
+	beforeAll(() => {
+		// Set up a default mock fetch
+		global.fetch = jest.fn();
 
-    // Reset and restore all mocks
-    jest.clearAllMocks();
-    jest.restoreAllMocks();
+	});
+	beforeEach(() => {
+		originalFetch = global.fetch;
 
-    // Provide a default environment variable
-    process.env.VITE_API_URL = 'http://gateway.marvel.com/';
+		// Reset and restore all mocks
+		jest.clearAllMocks();
+		jest.restoreAllMocks();
 
-    
-  });
+		// Provide a default environment variable
+		process.env.VITE_API_URL = 'http://gateway.marvel.com/';
 
-  afterEach(() => {
-    // Restore original fetch
-    global.fetch = originalFetch;
-  });
 
-  it('should fetch data and update state when fetchCharacterData is called', async () => {
-    // Arrange
-    // Mock the return value of getApiUrl
-    mockGetApiUrl.mockReturnValue('https://mock-url.com/')
-    
-    // Mock useCharacterFilter to provide offsetPage
-    mockUseCharacterFilter.mockReturnValue({
-      offsetPage: 0,
-      setCustomFilter: jest.fn(),
-    })
+	});
 
-    // Mock global fetch
-    global.fetch = jest.fn().mockResolvedValue({
-      json: async () => ({
-        data: {
-          results: [{ id: 100, name: 'Mock Character' }],
-          total: 50,
-          limit: 20,
-          offset: 0
-        },
-      }),
-    } as Response)
+	afterEach(() => {
+		// Restore original fetch
+		global.fetch = originalFetch;
+	});
 
-    // Act
-    // Render the hook
-    const { result } = renderHook(() => useCharacterData())
+	it('should fetch data and update state when fetchCharacterData is called', async () => {
+		// Arrange
+		// Mock the return value of getApiUrl
+		mockGetApiUrl.mockReturnValue('https://mock-url.com/')
 
-    // Initially, loading is false
-    expect(result.current.loading).toBe(false)
+		// Mock useCharacterFilter to provide offsetPage
+		mockUseCharacterFilter.mockReturnValue({
+			offsetPage: 0,
+			setCustomFilter: jest.fn(),
+		})
 
-    // Call fetchCharacterData
-    await act(async () => {
-      await result.current.fetchCharacterData('Spider-Man')
-    })
+		// Mock global fetch
+		global.fetch = jest.fn().mockResolvedValue({
+			json: async () => ({
+				data: {
+					results: [{ id: 100, name: 'Mock Character' }],
+					total: 50,
+					limit: 20,
+					offset: 0
+				},
+			}),
+		} as Response)
 
-    // Assert
-    // 1) getApiUrl should be called with the correct args
-    expect(mockGetApiUrl).toHaveBeenCalledWith({
-      characterName: 'Spider-Man',
-      offsetParam: 0,
-    })
+		// Act
+		// Render the hook
+		const { result } = renderHook(() => useCharacterData())
 
-    // 2) fetch was called
-    expect(global.fetch).toHaveBeenCalledWith('https://mock-url.com/')
+		// Initially, loading is false
+		expect(result.current.loading).toBe(false)
 
-    // 3) loading should be false after fetch completes
-    expect(result.current.loading).toBe(false)
+		// Call fetchCharacterData
+		await act(async () => {
+			await result.current.fetchCharacterData('Spider-Man')
+		})
 
-    // 4) characterData should be populated
-    expect(result.current.characterData).toEqual({
-      results: [{ id: 100, name: 'Mock Character' }],
-      total: 50,
-      limit: 20,
-      offset: 0
-    })
-  })
+		// Assert
+		// 1) getApiUrl should be called with the correct args
+		expect(mockGetApiUrl).toHaveBeenCalledWith({
+			characterName: 'Spider-Man',
+			offsetParam: 0,
+		})
 
-  it('should do nothing if characterName is empty', async () => {
-    mockGetApiUrl.mockReturnValue('https://mock-url.com/')
-    mockUseCharacterFilter.mockReturnValue({
-      offsetPage: 10,
-      setCustomFilter: jest.fn(),
-    })
+		// 2) fetch was called
+		expect(global.fetch).toHaveBeenCalledWith('https://mock-url.com/')
 
-    global.fetch = jest.fn() // mock, but we want to check if it’s NOT called
+		// 3) loading should be false after fetch completes
+		expect(result.current.loading).toBe(false)
 
-    const { result } = renderHook(() => useCharacterData())
+		// 4) characterData should be populated
+		expect(result.current.characterData).toEqual({
+			results: [{ id: 100, name: 'Mock Character' }],
+			total: 50,
+			limit: 20,
+			offset: 0
+		})
+	})
 
-    // Call fetch with empty string
-    await act(async () => {
-      await result.current.fetchCharacterData('')
-    })
+	it('should do nothing if characterName is empty', async () => {
+		mockGetApiUrl.mockReturnValue('https://mock-url.com/')
+		mockUseCharacterFilter.mockReturnValue({
+			offsetPage: 10,
+			setCustomFilter: jest.fn(),
+		})
 
-    // Should NOT call fetch
-    expect(global.fetch).not.toHaveBeenCalled()
-    // characterData should remain undefined
-    expect(result.current.characterData).toBeUndefined()
-    // loading should be false
-    expect(result.current.loading).toBe(false)
-  })
+		global.fetch = jest.fn() // mock, but we want to check if it’s NOT called
 
-  it('should set error if fetch throws', async () => {
-    mockGetApiUrl.mockReturnValue('https://mock-url.com/')
-    mockUseCharacterFilter.mockReturnValue({
-      offsetPage: 0,
-      setCustomFilter: jest.fn(),
-    })
+		const { result } = renderHook(() => useCharacterData())
 
-    // Simulate a network or server error
-    global.fetch = jest.fn().mockRejectedValue(new Error('Network Error'));
+		// Call fetch with empty string
+		await act(async () => {
+			await result.current.fetchCharacterData('')
+		})
 
-    const { result } = renderHook(() => useCharacterData())
+		// Should NOT call fetch
+		expect(global.fetch).not.toHaveBeenCalled()
+		// characterData should remain undefined
+		expect(result.current.characterData).toBeUndefined()
+		// loading should be false
+		expect(result.current.loading).toBe(false)
+	})
 
-    await expect(result.current.fetchCharacterData('BadCharacter'))
-      .rejects.toThrow('Network Error');
+	it('should set error if fetch throws', async () => {
+		mockGetApiUrl.mockReturnValue('https://mock-url.com/')
+		mockUseCharacterFilter.mockReturnValue({
+			offsetPage: 0,
+			setCustomFilter: jest.fn(),
+		})
 
-    // loading should be false
-    expect(result.current.loading).toBe(false)
-  })
+		// Simulate a network or server error
+		global.fetch = jest.fn().mockRejectedValue(new Error('Network Error'));
 
-  it('should throw if VITE_API_URL is not defined (if your hook explicitly checks for it)', async () => {
-    // If your hook code throws an error when VITE_API_URL is undefined,
-    // let's remove it from the environment:
-    delete process.env.VITE_API_URL
+		const { result } = renderHook(() => useCharacterData())
 
-    
-    mockGetApiUrl.mockImplementation(() => {
-      throw new Error('Error fetching data')
-    })
+		await expect(result.current.fetchCharacterData('BadCharacter'))
+			.rejects.toThrow('Network Error');
 
-    mockUseCharacterFilter.mockReturnValue({
-      offsetPage: 0,
-      setCustomFilter: jest.fn(),
-    })
+		// loading should be false
+		expect(result.current.loading).toBe(false)
+	})
 
-    const { result } = renderHook(() => useCharacterData())
+	it('should throw if VITE_API_URL is not defined (if your hook explicitly checks for it)', async () => {
+		// If your hook code throws an error when VITE_API_URL is undefined,
+		// let's remove it from the environment:
+		delete process.env.VITE_API_URL
 
-    await expect(
-      act(async () => {
-        await result.current.fetchCharacterData('Spider-Man')
-      })
-    ).rejects.toThrow('Error fetching data')
-  })
+
+		mockGetApiUrl.mockImplementation(() => {
+			throw new Error('Error fetching data')
+		})
+
+		mockUseCharacterFilter.mockReturnValue({
+			offsetPage: 0,
+			setCustomFilter: jest.fn(),
+		})
+
+		const { result } = renderHook(() => useCharacterData())
+
+		await expect(
+			act(async () => {
+				await result.current.fetchCharacterData('Spider-Man')
+			})
+		).rejects.toThrow('Error fetching data')
+	})
 })

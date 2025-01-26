@@ -59,22 +59,18 @@ export const useCharacterData = () => {
                 return data
             }
 
-            // setCharacterData(undefined)
             let payload = await fetchData()
-            console.log('fetching')
-            console.log('payload total', payload.data.total)
-            // console.log('first payload', payload.data)
            
             if (payload.data.total === 0) {
                 throw new Error("No data found")
             }
             if (!payload.data.results.length && payload.data.total > 0) {
                 
-                console.log('fetching again')
                 // clear payload
                 setCharacterData(undefined)
+                // second payload
                 payload = await fetchData()
-                console.log('second payload', payload.data)
+                
                 const total = payload.data.total
                 const limit = payload.data.limit
                 // If the offsetParam is greater than the total number of pages, set the offset to the last page
@@ -86,7 +82,6 @@ export const useCharacterData = () => {
             }
             setTotalPages(Math.ceil(payload.data.total / payload.data.limit))
             setCharacterData(payload.data as Response)
-            console.log('payload', payload.data)
         }
         catch (event) {
             setError(event as Error)
