@@ -29,5 +29,8 @@ export const getApiUrl = ({ characterName, offsetParam }: Props) => {
     url.searchParams.append('offset', offsetParam.toString())
     url.searchParams.append('limit', '20')
 
+    console.log('url', url.toString())
+
     return url
+    
 }

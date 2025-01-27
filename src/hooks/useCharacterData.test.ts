@@ -11,8 +11,9 @@ describe('useCharacterData', () => {
 	// Common mocks
 	const mockGetApiUrl = getApiUrl as jest.Mock;
 	const mockUseCharacterFilter = useCharacterFilter as jest.Mock;
+	const DEFAULT_TOTAL_PAYLOAD = 50;
 
-	let originalFetch: typeof global.fetch;
+
 
 
 	beforeAll(() => {
@@ -21,7 +22,6 @@ describe('useCharacterData', () => {
 
 	});
 	beforeEach(() => {
-		originalFetch = global.fetch;
 
 		// Reset and restore all mocks
 		jest.clearAllMocks();
@@ -33,10 +33,21 @@ describe('useCharacterData', () => {
 
 	});
 
-	afterEach(() => {
-		// Restore original fetch
-		global.fetch = originalFetch;
-	});
+	const payload = {
+		data: {
+			results: [{ id: 100, name: 'Mock Character' }],
+			total: DEFAULT_TOTAL_PAYLOAD,
+			limit: 20,
+			offset: 0
+		}
+	}
+
+	// Mock global fetch
+	global.fetch = jest.fn().mockResolvedValue({
+		json: async () => (
+			payload
+		),
+	} as Response)
 
 	it('should fetch data and update state when fetchCharacterData is called', async () => {
 		// Arrange
@@ -73,6 +84,7 @@ describe('useCharacterData', () => {
 			await result.current.fetchCharacterData('Spider-Man')
 		})
 
+
 		// Assert
 		// 1) getApiUrl should be called with the correct args
 		expect(mockGetApiUrl).toHaveBeenCalledWith({
@@ -87,12 +99,10 @@ describe('useCharacterData', () => {
 		expect(result.current.loading).toBe(false)
 
 		// 4) characterData should be populated
-		expect(result.current.characterData).toEqual({
-			results: [{ id: 100, name: 'Mock Character' }],
-			total: 50,
-			limit: 20,
-			offset: 0
-		})
+		expect(result.current.characterData).toEqual(
+			payload.data
+		)
+
 	})
 
 	it('should do nothing if characterName is empty', async () => {
